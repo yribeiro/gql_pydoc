@@ -1,3 +1,5 @@
+import os
+import jinja2
 import json
 import requests
 
@@ -22,3 +24,8 @@ if __name__ == "__main__":
     schema = docs.get_schema_info()
 
     print(json.dumps(schema, indent=4))
+
+    # example code to render html templates
+    with open(os.path.join(os.getcwd(), "..", "templates", "index.html"), "r") as fp:
+        template = jinja2.Template(fp.read())
+        print(template.render(title="My GraphQL Schema Page"))
