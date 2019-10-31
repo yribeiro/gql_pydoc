@@ -1,21 +1,24 @@
 import json
 import requests
 
-introspection_query = """{
-    __schema{
-        queryType{
-            name
-            fields{
-                name
-                description
-            }
-        }
-    }
-}"""
+from gql_pydoc.gql_docs import introspection_query
+
+
+class GqlPyDoc:
+    """ Class to ping a graph endpoint and generate documentation from the schema """
+
+    def __init__(self, endpoint: str):
+        self._endpoint = endpoint
+
+    def get_schema_info(self):
+        val = requests.post(self._endpoint, json={"query": introspection_query})
+        content = json.loads(val.content.decode("utf-8"))
+        return content
+
 
 if __name__ == "__main__":
     # try and send request to the hacker news online API
-    val = requests.post("https://countries.trevorblades.com", json={"query": introspection_query})
-    content = json.loads(val.content.decode("utf-8"))
+    docs = GqlPyDoc("https://countries.trevorblades.com")
+    schema = docs.get_schema_info()
 
-    print(json.dumps(content, indent=4))
+    print(json.dumps(schema, indent=4))
